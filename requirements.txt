@@ -1,0 +1,23 @@
+# FastAPI and Server
+fastapi
+uvicorn[standard]
+python-multipart
+
+# Data Validation
+pydantic
+pydantic-settings
+
+# Computer Vision
+ultralytics
+opencv-python
+Pillow
+torch
+torchvision
+
+# LLM Integration
+ollama
+requests
+
+# Utilities
+python-dotenv
+numpy

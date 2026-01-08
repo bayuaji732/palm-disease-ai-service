@@ -1,0 +1,22 @@
+{
+  "model_type": "YOLOv8-Classification",
+  "model_name": "yolov8m_cls_run",
+  "image_size": 224,
+  "num_classes": 9,
+  "class_names": {
+    "0": "Black Scorch",
+    "1": "Fusarium Wilt",
+    "2": "Healthy sample",
+    "3": "Leaf Spots",
+    "4": "Magnesium Deficiency",
+    "5": "Manganese Deficiency",
+    "6": "Parlatoria Blanchardi",
+    "7": "Potassium Deficiency",
+    "8": "Rachis Blight"
+  },
+  "training_date": "2026-01-08T16:49:51.700842",
+  "metrics": {
+    "top1": 0.9653978943824768,
+    "top5": 0.9982699155807495
+  }
+}
