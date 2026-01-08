@@ -4,8 +4,8 @@ from PIL import Image
 import io
 import logging
 
-from app.services.cv_service import cv_service
-from app.services.llm_service import llm_service
+from app.services import cv_service
+from app.services import llm_service
 from app.schemas.prediction import (
     ClassificationResult,
     ExplanationResponse,
@@ -13,7 +13,7 @@ from app.schemas.prediction import (
     ErrorResponse
 )
 from app.utils.prompt_builder import get_confidence_level
-from app.config import settings
+from app import config
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -28,9 +28,7 @@ async def health_check():
         HealthResponse with service status
     """
     return HealthResponse(
-        status="ok",
-        model_loaded=cv_service.is_loaded(),
-        ollama_available=llm_service.is_available()
+        status="ok"
     )
 
 
@@ -53,20 +51,20 @@ async def predict_image(
     try:
         # Validate file extension
         file_ext = file.filename.split('.')[-1].lower()
-        if file_ext not in settings.ALLOWED_EXTENSIONS:
+        if file_ext not in config.ALLOWED_EXTENSIONS:
             raise HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-                detail=f"Invalid file type. Allowed: {settings.ALLOWED_EXTENSIONS}"
+                detail=f"Invalid file type. Allowed: {config.ALLOWED_EXTENSIONS}"
             )
         
         # Read and validate image
         contents = await file.read()
         
         # Check file size
-        if len(contents) > settings.MAX_UPLOAD_SIZE:
+        if len(contents) > config.MAX_UPLOAD_SIZE:
             raise HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-                detail=f"File too large. Max size: {settings.MAX_UPLOAD_SIZE/1024/1024}MB"
+                detail=f"File too large. Max size: {config.MAX_UPLOAD_SIZE/1024/1024}MB"
             )
         
         # Open image
@@ -77,16 +75,17 @@ async def predict_image(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
                 detail=f"Invalid image file: {str(e)}"
             )
-        
+        cv_service_instace = cv_service.CVService()
         # Validate image
-        if not cv_service.validate_image(image):
+        if not cv_service_instace.validate_image(image):
             raise HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
                 detail="Image validation failed. Check format and dimensions."
             )
         
         # Perform prediction
-        result = cv_service.predict(image)
+        result = cv_service_instace.load_model()
+        result = cv_service_instace.predict(image)
         
         return result
         
@@ -116,7 +115,8 @@ async def explain_result(result: ClassificationResult):
     """
     try:
         # Generate explanation
-        explanation = llm_service.generate_explanation(
+        llm_service_instance = llm_service.LLMService()
+        explanation = llm_service_instance.generate_explanation(
             label=result.label,
             confidence=result.confidence
         )
@@ -163,7 +163,8 @@ async def predict_and_explain(
         
         # Step 2: LLM Explanation
         logger.info("Generating LLM explanation")
-        explanation = llm_service.generate_explanation(
+        llm_service_instance = llm_service.LLMService()
+        explanation = llm_service_instance.generate_explanation(
             label=classification.label,
             confidence=classification.confidence
         )

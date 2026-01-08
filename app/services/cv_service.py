@@ -30,13 +30,15 @@ class CVService:
             RuntimeError: If model loading fails
         """
         try:
-            if not config.MODEL_PATH.exists():
+            model_path = Path(config.MODEL_PATH) 
+
+            if not model_path.exists():
                 raise FileNotFoundError(
-                    f"Model file not found at: {config.MODEL_PATH}"
+                    f"Model file not found at: {model_path}"
                 )
             
-            logger.info(f"Loading model from {config.MODEL_PATH}")
-            self.model = YOLO(str(config.MODEL_PATH))
+            logger.info(f"Loading model from {model_path}")
+            self.model = YOLO(str(model_path))
             self.model.to(self.device)
             logger.info("Model loaded successfully")
             
@@ -79,34 +81,17 @@ class CVService:
             )
             
             # Extract prediction
-            if len(results) == 0 or len(results[0].boxes) == 0:
-                # No detection - assume healthy or uncertain
-                return ClassificationResult(
-                    label="Healthy sample",
-                    confidence=0.5
-                )
+            if not results or results[0].probs is None:
+                return ClassificationResult(label="Healthy sample", confidence=0.5)
             
             # Get highest confidence detection
             result = results[0]
-            boxes = result.boxes
+            probs = result.probs
             
-            # Find box with highest confidence
-            confidences = boxes.conf.cpu().numpy()
-            class_ids = boxes.cls.cpu().numpy()
-            
-            max_idx = np.argmax(confidences)
-            max_conf = float(confidences[max_idx])
-            class_id = int(class_ids[max_idx])
-            
-            # Get class name
-            class_name = result.names[class_id]
-            
-            # Validate class name
-            if class_name not in config.DISEASE_CLASSES:
-                logger.warning(f"Unknown class detected: {class_name}")
-                # Map to closest known class or healthy
-                class_name = "Healthy sample"
-                max_conf = 0.5
+            # Get the top 1 class index and confidence
+            top1_idx = probs.top1
+            max_conf = float(probs.top1conf)
+            class_name = result.names[top1_idx]
             
             logger.info(f"Prediction: {class_name} ({max_conf:.2f})")
             
@@ -145,7 +130,3 @@ class CVService:
             
         except Exception:
             return False
-
-
-# Global service instance
-cv_service = CVService()

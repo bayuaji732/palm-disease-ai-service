@@ -1,20 +1,32 @@
 import os
+from dotenv import load_dotenv
 
+load_dotenv()
 
 # Model Settings
 MODEL_PATH = os.getenv("MODEL_PATH")
-CONFIDENCE_THRESHOLD = os.getenv("CONFIDENCE_THRESHOLD")
-IOU_THRESHOLD = os.getenv("IOU_THRESHOLD")
-IMAGE_SIZE = os.getenv("IMAGE_SIZE")
+CONFIDENCE_THRESHOLD = float(os.getenv("CONFIDENCE_THRESHOLD", 0.25))
+IOU_THRESHOLD = float(os.getenv("IOU_THRESHOLD", 0.45))
+IMAGE_SIZE = int(os.getenv("IMAGE_SIZE", 640))
 
 # LLM Settings
 OLLAMA_HOST = os.getenv("OLLAMA_HOST")
 OLLAMA_MODEL = os.getenv("OLLAMA_MODEL")
-LLM_TIMEOUT = os.getenv("LLM_TIMEOUT")
-LLM_TEMPERATURE = os.getenv("LLM_TEMPERATURE")
+LLM_TIMEOUT = int(os.getenv("LLM_TIMEOUT"))
+LLM_TEMPERATURE = float(os.getenv("LLM_TEMPERATURE"))
 
 # File Upload Settings
-MAX_UPLOAD_SIZE = os.getenv("MAX_UPLOAD_SIZE")
-ALLOWED_EXTENSIONS = os.getenv("ALLOWED_EXTENSIONS")
+MAX_UPLOAD_SIZE = 10485760
+ALLOWED_EXTENSIONS = ["jpg", "jpeg", "png"]
 # Disease Classes (Fixed Dataset)
-DISEASE_CLASSES = os.getenv("DISEASE_CLASSSES")
+DISEASE_CLASSES = [
+        "Black Scorch",
+        "Fusarium Wilt",
+        "Healthy sample",
+        "Leaf Spots",
+        "Magnesium Deficiency",
+        "Manganese Deficiency",
+        "Parlatoria Blanchardi",
+        "Potassium Deficiency",
+        "Rachis Blight"
+    ]

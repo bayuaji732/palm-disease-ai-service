@@ -32,8 +32,6 @@ class HealthResponse(BaseModel):
     """Health check response."""
     
     status: str
-    model_loaded: bool
-    ollama_available: bool
 
 
 class ErrorResponse(BaseModel):

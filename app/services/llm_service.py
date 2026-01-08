@@ -106,7 +106,3 @@ class LLMService:
         except Exception as e:
             logger.error(f"Text generation failed: {str(e)}")
             return f"[LLM Error: {str(e)}]"
-
-
-# Global service instance
-llm_service = LLMService()
