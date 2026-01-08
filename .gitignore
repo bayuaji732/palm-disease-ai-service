@@ -51,7 +51,7 @@ models/*.weights
 
 # Training Outputs
 runs/
-palm_disease_detection/
+palm_disease_classification/
 *.jpg
 *.png
 *.jpeg
