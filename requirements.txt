@@ -21,3 +21,5 @@ requests
 # Utilities
 python-dotenv
 numpy
+
+streamlit

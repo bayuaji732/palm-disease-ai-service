@@ -84,7 +84,7 @@ async def predict_image(
             )
         
         # Perform prediction
-        result = cv_service_instace.load_model()
+        cv_service_instace.load_model()
         result = cv_service_instace.predict(image)
         
         return result
@@ -159,6 +159,7 @@ async def predict_and_explain(
     try:
         # Step 1: CV Prediction
         logger.info("Starting CV prediction")
+        await file.seek(0)
         classification = await predict_image(file)
         
         # Step 2: LLM Explanation
