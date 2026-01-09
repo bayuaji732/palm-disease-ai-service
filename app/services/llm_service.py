@@ -74,6 +74,8 @@ class LLMService:
             
             # Validate response
             if not explanation or len(explanation) < 50:
+                if len(explanation) > 5000:  # reasonable limit
+                    explanation = explanation[:5000]
                 logger.warning("LLM response too short, using fallback")
                 return build_fallback_explanation(label, confidence)
             

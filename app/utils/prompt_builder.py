@@ -57,6 +57,7 @@ def build_explanation_prompt(label: str, confidence: float) -> str:
     - Do not provide information outside the palm oil domain
     - If confidence is low (<50%), include a recommendation for expert consultation
     - Focus on best practices, not commercial products
+    - Use Markdown format.
 
     Answer professionally and practically."""
     

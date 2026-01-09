@@ -3,9 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routes import router
 
-from app.services.cv_service import CVService
-from app.services.llm_service import LLMService
-
 # Create FastAPI application
 app = FastAPI()
 
@@ -31,7 +28,3 @@ async def root():
         "docs": "/docs",
         "health": "/api/v1/health"
     }
-
-cv_service_singleton = CVService()
-cv_service_singleton.load_model()
-llm_service_singleton = LLMService()

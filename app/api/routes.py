@@ -4,8 +4,7 @@ from PIL import Image
 import io
 import logging
 
-from app.services import cv_service
-from app.services import llm_service
+from app.services import cv_service, llm_service
 from app.schemas.prediction import (
     ClassificationResult,
     ExplanationResponse,
@@ -159,7 +158,7 @@ async def predict_and_explain(
     try:
         # Step 1: CV Prediction
         logger.info("Starting CV prediction")
-        await file.seek(0)
+        file.file.seek(0)
         classification = await predict_image(file)
         
         # Step 2: LLM Explanation

@@ -115,10 +115,18 @@ class CVService:
             True if valid, False otherwise
         """
         try:
-            # Check size only, remove format check
-            width, height = image.size
-            if width < 100 or height < 100 or width > 4096 or height > 4096:
+            # Check format
+            if image.format not in ['JPEG', 'PNG', 'JPG']:
                 return False
+            
+            # Check size (min 100x100, max 4096x4096)
+            width, height = image.size
+            if width < 100 or height < 100:
+                return False
+            if width > 4096 or height > 4096:
+                return False
+            
             return True
+            
         except Exception:
             return False
