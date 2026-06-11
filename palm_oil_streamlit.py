@@ -224,7 +224,7 @@ def markdown_to_reportlab_blocks(md_text: str, styles):
 
                 list_items.append(ListItem(
                     Paragraph(content, styles["Normal"]),
-                    value=current_val
+                    value=str(current_val) if current_val is not None else None
                 ))
                 i += 1
             
@@ -232,7 +232,7 @@ def markdown_to_reportlab_blocks(md_text: str, styles):
             t_list = ListFlowable(
                 list_items,
                 bulletType='bullet' if is_bullet else '1',
-                start=list_start_value if list_start_value is not None else 1,
+                start=str(list_start_value) if list_start_value is not None else '1',
                 leftIndent=12,
                 bulletFontSize=10,
                 # These control vertical spacing inside the list
